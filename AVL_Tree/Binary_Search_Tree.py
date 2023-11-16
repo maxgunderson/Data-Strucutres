@@ -2,33 +2,33 @@ class Binary_Search_Tree:
 
   class __BST_Node:
   
-    def __init__(self, value): 
+    def __init__(self, value): # new node
       self.value = value
       self.left = None
       self.right = None 
       self.height = 1
 
-  def __init__(self):
+  def __init__(self): # new BST
     self.__root = None
     self.__height = 0
 
-  def insert_element(self, value):
-    insert_node = self.__BST_Node(value) 
-    self.__root = self.__recursive_insert(insert_node, self.__root, value) 
-    self.__height = self.__root.height 
+  def insert_element(self, value): 
+    insert_node = self.__BST_Node(value) # node to insert
+    self.__root = self.__recursive_insert(insert_node, self.__root, value) # call to recursive function
+    self.__height = self.__root.height # update height 
 
   def __recursive_insert(self, Node, t, value): 
-    if t == None: 
+    if t == None: # base case
       return Node
     
     if value == t.value:
       raise ValueError
     
-    elif Node.value < t.value: 
+    elif Node.value < t.value: # recursive call left
       t.left = self.__recursive_insert(Node, t.left, value)
       self.__update_height(t)
 
-    elif Node.value > t.value: 
+    elif Node.value > t.value: # recursive call right
       t.right = self.__recursive_insert(Node,t.right, value)
       self.__update_height(t)
     
@@ -37,39 +37,39 @@ class Binary_Search_Tree:
   def __update_height(self, t): 
     if t.left == None and t.right == None:
       t.height = 1
-    elif t.left == None and t.right != None: 
+    elif t.left == None and t.right != None: # check if left is None
         t.height = t.right.height + 1
-    elif t.right == None and t.left != None: 
+    elif t.right == None and t.left != None: # check if right is None
         t.height = t.left.height + 1
-    else: 
+    else: # regular case, both nodes exist
         t.height = max(t.left.height, t.right.height) + 1
 
   def remove_element(self, value): 
-    self.__root = self.__recursively_remove_element(self.__root , value) 
+    self.__root = self.__recursively_remove_element(self.__root , value)
   
   def __recursively_remove_element(self, Node, value): 
-    if Node == None: 
+    if Node == None: # havent found the value raise error
       raise ValueError
     
-    elif Node.value == value: 
-      if Node.right == None and Node.left == None: 
+    elif Node.value == value: # found the value:
+      if Node.right == None and Node.left == None: # leaf node return none
         return None
-      elif Node.right == None: 
+      elif Node.right == None: # only left Node
         return Node.left
-      elif Node.left == None: 
+      elif Node.left == None: # only right Node
         return Node.right
-      else: 
+      else: # node has two children 
         counter_node = Node.right
         while counter_node.left != None:
           counter_node = counter_node.left
         Node.right = self.__recursively_remove_element(Node.right, counter_node.value)
         Node.value = counter_node.value
 
-    elif value < Node.value: 
+    elif value < Node.value: # value is lower recur left 
       Node.left = self.__recursively_remove_element(Node.left, value)
       self.__update_height(Node)
 
-    elif value > Node.value: 
+    elif value > Node.value: # value is higher recur right 
       Node.right = self.__recursively_remove_element(Node.right, value)
       self.__update_height(Node)
       
@@ -118,7 +118,7 @@ class Binary_Search_Tree:
     string += str(self.__recursive_post_order(Node.left))
     string += str(self.__recursive_post_order(Node.right))
     string += ' ' + str(Node.value) + ','
-    return string 
+    return string
 
   def to_list(self):
     to_list = []
@@ -139,34 +139,34 @@ class Binary_Search_Tree:
 
   def __str__(self):
     return self.in_order()
-  
-  def __compute_balance(self,t): 
+
+  def __compute_balance(self,t): # extra private function to compute balance factor
     balance_factor = 0 
-    if t.right == None and t.left == None: 
+    if t.right == None and t.left == None: # t has no children nodes
       balance_factor = 0
-    elif t.right == None: 
+    elif t.right == None: # only left node
       balance_factor = -1 * t.left.height
-    elif t.left == None: 
+    elif t.left == None: # only right node
       balance_factor = t.right.height 
-    else: 
+    else: # t has two nodes 
       balance_factor = t.right.height - t.left.height
     return balance_factor
 
   def __balance(self, t):   
     balance_factor = self.__compute_balance(t)   
 
-    if balance_factor > 1 and self.__compute_balance(t.right) >= 0: 
+    if balance_factor > 1 and self.__compute_balance(t.right) >= 0: # standard single left rotation
       return self.__rotate_left(t) 
     
-    elif balance_factor < -1 and self.__compute_balance(t.left) <= 0: 
+    elif balance_factor < -1 and self.__compute_balance(t.left) <= 0: # standard single right rotation
       value = self.__rotate_right(t)
       return value
     
-    elif balance_factor > 1 and self.__compute_balance(t.right) < 0: 
+    elif balance_factor > 1 and self.__compute_balance(t.right) < 0: # double rotation 
       t.right = self.__rotate_right(t.right)
       return self.__rotate_left(t)
     
-    elif balance_factor < -1 and self.__compute_balance(t.left) > 0: 
+    elif balance_factor < -1 and self.__compute_balance(t.left) > 0: # double rotation 
       t.left = self.__rotate_left(t.left)
       return self.__rotate_right(t)
     
